@@ -1,12 +1,15 @@
-import React, { useEffect, useState,useMemo} from 'react'
+import React, { useEffect, useState } from 'react'
 
 function Form() {
-    const [nome,setNome]=useState("")
-    const [userName,setUserName]=useState("")
-    const [password,setPassword]=useState("")
-    const [specializzazione,setSpecializzazione]=useState("")
-    const [esperienza,setEsperienza]=useState("")
-    const [descrizione,setDescrizione]=useState("")
+    const [nome, setNome] = useState("")
+    const [userName, setUserName] = useState("")
+    const [password, setPassword] = useState("")
+    const [specializzazione, setSpecializzazione] = useState("")
+    const [esperienza, setEsperienza] = useState("")
+    const [descrizione, setDescrizione] = useState("")
+    const [validUserName, setValidUserName] = useState("")
+    const [validPassword, setValidPassword] = useState("")
+    const [validDescrizione, setValidDescrizione] = useState("")
     const letters = "abcdefghijklmnopqrstuvwxyz"
     const numbers = "0123456789";
     const symbols = '!@#$%^&*()-_=+[]{}|;:\'"\\,.<>?/`~';
@@ -18,26 +21,27 @@ function Form() {
     // console.log(lettersArray) 
 
 
-    const handleForm =(e)=>{
-        e.preventDefault() 
-        const value = [nome,userName,password,specializzazione,esperienza,descrizione]
-        const controll = value.some(el => el.trim()==="")  
+    const handleForm = (e) => {
+        e.preventDefault()
+        const value = [nome, userName, password, specializzazione, esperienza, descrizione]
+        const controll = value.some(el => el.trim() === "")
         // console.log(controll) 
-        if (!controll && esperienza > 0 && userName && password && descrizione)
-      { //   console.log("il controllo è :", controll)
-           console.log(value)
+        if (!controll && esperienza > 0 && userName && password && descrizione) {
+               console.log(value)
         }
-        else { alert("tutti i campi devono esser completati") }} 
-        //*  UserName
-    const validationUserName = useMemo(() => {
+        else { alert("tutti i campi devono esser completati") }
+    }
+    //*  UserName
+    const validationUserName = () => {
 
         if (userName.trim().length <= 0) {
-       return ("Inserisce un Username ")
-            
+            setValidUserName("Inserisce un Username ")
+            return
         }
 
         if (userName.trim().length < 6 && userName.trim().length > 0) {
-        return  ("Deve contenere  almeno 6 caratteri ")
+            setValidUserName("Deve contenere  almeno 6 caratteri ")
+            return
 
         }
 
@@ -45,39 +49,47 @@ function Form() {
         // console.log(controlloLettres)
         // console.log(userName.split(""))
         if (controlloLettres) {
-       return (
-           <span className='text-green-300 '>UserName corretto ✔ </span> )
-         } 
+            setValidUserName(<span className='text-green-300 '>UserName corretto ✔ </span>)
+
+        }
         else {
-        return (<span className='text-red-400'> UserName errato ❌ </span>)}
-}, [userName]) 
-        //*Password 
-    const validationPassword = useMemo(() => {
+            setValidUserName(<span className='text-red-400'> UserName errato ❌ </span>)
+
+        }
+    }
+    //*Password 
+    const validationPassword = () => {
         const isValidlettera = lettersArray.some(el => password.split("").includes(el))
         const isValidsimbolo = arraySymbols.some(el => password.split("").includes(el))
         console.log(isValidlettera)
         const isValidNumber = arrayNumbers.some(el => password.split("").includes(el))
         if (password === "") {
-            return (" inserisce Password ")
+            setValidPassword(" inserisce Password ")
         }
         else {
-            return password.length > 8 && isValidlettera && isValidsimbolo && isValidNumber ? <span className='text-green-300 '>Password valida ✔ </span> : <span className='text-red-400 '> Deve contenere almeno 8 caratteri, 1 lettera, 1 numero e 1 simbolo❌ </span>
-        }},[password])
+            password.length > 8 && isValidlettera && isValidsimbolo && isValidNumber ? setValidPassword(<span className='text-green-300 '>Password valida ✔ </span>) : setValidPassword(<span className='text-red-400 '> Deve contenere almeno 8 caratteri, 1 lettera, 1 numero e 1 simbolo❌ </span>)
+        }
 
-        //*Descrizione 
-    const validationDescrizione = useMemo(() => {
+
+
+    }
+    //*Descrizione 
+    const validationDescrizione = () => {
         if (descrizione.trim() === "") {
-            return (<span>Inserisce una Descrizione  </span>)
+            setValidDescrizione(<span>Inserisce una Descrizione  </span>)
         }
         else {
-            return (
-                descrizione.trim().length > 100 && descrizione.trim().length < 1000 ? <span className='text-green-300 '>Descrizione valida ✔ </span> :
-                    <span className='text-red-400 '> Deve contenere tra 100 e 1000 caratteri(senza spazi iniziali e finali)❌ </span>
-            )
-
+            descrizione.trim().length > 100 && descrizione.trim().length < 1000 ? setValidDescrizione(<span className='text-green-300 '>Descrizione valida ✔ </span>) :
+                setValidDescrizione(<span className='text-red-400 '> Deve contenere tra 100 e 1000 caratteri(senza spazi iniziali e finali)❌ </span>)
         }
 
-    },[descrizione])
+    }
+
+
+
+    useEffect(() => { validationPassword() }, [password])
+    useEffect(() => { validationUserName() }, [userName])
+    useEffect(() => { validationDescrizione() }, [descrizione])
 
     return (
         <section className=' mt-20 m-auto max-w-[350px] p-10 rounded-2xl border-4 border-blue-100  bg-cyan-800 text-white'>
@@ -86,40 +98,39 @@ function Form() {
                 {/* Nome */}
                 <label className='font-light '>Nome :</label>
                 <input type='text' id="nome" name="nome" value={nome} className='border border-blue-100 w-48' onChange={(e) => setNome(e.target.value)} />
- 
+
                 {/* Username   */}
                 <label className='font-light '>Username  :</label>
                 <input type='text' id="userName" name="" value={userName} onChange={(e) => setUserName(e.target.value)} className='border border-blue-100 w-48' autoComplete="username" />
-                <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs'> {validationUserName}</p>
+                <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs'> {validUserName}</p>
 
                 {/* Specializzazione */}
                 <label className='font-light '>Specializzazione :</label>
                 <select id="specializzazione" name="specializzazione" value={specializzazione} onChange={(e) => setSpecializzazione(e.target.value)} className='border border-blue-100 w-48' >
                     <option className='font-extralight '>Scegli una specializz..</option>
                     <option value={"Full stack"}>Full stack</option>
-                <option value={"Frontend"}>Frontend</option>
-                <option value={"Backend"}>Backend</option>
+                    <option value={"Frontend"}>Frontend</option>
+                    <option value={"Backend"}>Backend</option>
                 </select>
 
 
                 {/* Anni di esperienza */}
                 <label className='font-light '>Anni di esperienza :</label>
                 <input type='number' id="esperienza" name="esperienza" value={esperienza} onChange={(e) => setEsperienza(e.target.value)} className='border border-blue-100 w-48' />
-               
+
                 {/* Password */}
                 <label className='font-light '>Password :</label>
                 <input type='password' id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} className='border border-blue-100 w-48' autoComplete="current-password" />
-                <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs'> {validationPassword}</p>
+                <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs'> {validPassword}</p>
 
                 {/* Breve descrizione sullo sviluppatore */}
                 <label className='font-light w-48 '>Breve descrizione sullo sviluppatore :</ label>
-                <textarea id="descrizione" name="descrizione" value={descrizione} onChange={(e) => setDescrizione(e.target.value)} className='border border-blue-100 w-48' /> 
-                <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs'> {validationDescrizione}</p>
+                <textarea id="descrizione" name="descrizione" value={descrizione} onChange={(e) => setDescrizione(e.target.value)} className='border border-blue-100 w-48' />
+                <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs'> {validDescrizione}</p>
 
                 <button type='submit' className='bg-lime-100 w-fit   p-2 rounded-2xl border  border-stone-200 mt-2 hover:bg-orange-100 hover:text-cyan-800 text-sky-900 font-bold hover:border-amber-800 cursor-pointer'>Send</button>
-          </form>
+            </form>
         </section>
     )
 }
-
-export default Form
+export default Form 
