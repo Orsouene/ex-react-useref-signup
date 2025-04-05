@@ -1,11 +1,9 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo,useRef } from 'react'
 
 function Form() {
-    const [nome, setNome] = useState("")
+
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
-    const [specializzazione, setSpecializzazione] = useState("")
-    const [esperienza, setEsperienza] = useState("")
     const [descrizione, setDescrizione] = useState("")
     const letters = "abcdefghijklmnopqrstuvwxyz"
     const numbers = "0123456789";
@@ -16,10 +14,16 @@ function Form() {
     // console.log(arrayNumbers)
     // console.log(arraySymbols)
     // console.log(lettersArray) 
-
+   const nameRef=useRef()
+   const esperienzaRef=useRef()
+   const specializzazioneRef=useRef()
 
     const handleForm = (e) => {
         e.preventDefault();
+        const nome = nameRef.current.value
+        const specializzazione=specializzazioneRef.current.value 
+        const esperienza = esperienzaRef.current.value
+
         const value = [nome, userName, password, specializzazione, esperienza, descrizione];
         const controll = value.some(el => el.trim() === "");
 
@@ -62,20 +66,20 @@ function Form() {
 
                 {/* Nome */}
                 <label className='font-light '>Nome :</label>
-                <input type='text' id="nome" name="nome" value={nome} className='border border-blue-100 w-48' onChange={(e) => setNome(e.target.value)} />
+                <input type='text' id="nome" name="nome" className='border border-blue-100 w-48' ref={nameRef} />
 
                 {/* Username   */}
                 <label className='font-light '>Username  :</label>
-                <input type='text' id="userName" name="" value={userName} onChange={(e) => setUserName(e.target.value)} className='border border-blue-100 w-48' autoComplete="username" />
+                <input type='text' id="userName" className='border border-blue-100 w-48' autoComplete="username" value={userName} onChange={(e) => setUserName(e.target.value)} />
                 <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs' style={{ color: validationUserName ? "#86C66C " : "red" }}> {validationUserName ? "UserName corretto ✔ " : " Deve contenere solo caratteri alfanumerici e almeno 6 caratteri ❌" }
                
                 </p>
 
                 {/* Specializzazione */}
                 <label className='font-light '>Specializzazione :</label>
-                <select id="specializzazione" name="specializzazione" value={specializzazione} onChange={(e) => setSpecializzazione(e.target.value)} className='border border-blue-100 w-48' >
+                <select id="specializzazione" name="specializzazione" ref={specializzazioneRef} className='border border-blue-100 w-48 bg-cyan-800' >
                     <option className='font-extralight '>Scegli una specializz..</option>
-                    <option value={"Full stack"}>Full stack</option>
+                    <option className='' value={"Full stack"}>Full stack</option>
                     <option value={"Frontend"}>Frontend</option>
                     <option value={"Backend"}>Backend</option>
                 </select>
@@ -83,7 +87,7 @@ function Form() {
 
                 {/* Anni di esperienza */}
                 <label className='font-light '>Anni di esperienza :</label>
-                <input type='number' id="esperienza" name="esperienza" value={esperienza} onChange={(e) => setEsperienza(e.target.value)} className='border border-blue-100 w-48' />
+                <input type='number' id="esperienza" name="esperienza" ref={esperienzaRef} className='border border-blue-100 w-48' />
 
                 {/* Password */}
                 <label className='font-light '>Password :</label>
@@ -92,7 +96,7 @@ function Form() {
 
                 {/* Breve descrizione sullo sviluppatore */}
                 <label className='font-light w-48 '>Breve descrizione sullo sviluppatore :</ label>
-                <textarea id="descrizione" name="descrizione" value={descrizione} onChange={(e) => setDescrizione(e.target.value)} className='border border-blue-100 w-48' />
+                <textarea id="descrizione" name="descrizione" value={descrizione} onChange={(e) => setDescrizione(e.target.value)} className='border border-blue-100 w-48 h-24' />
                 <p className='border-b-2 border-cyan-100 w-48 p-1.5 rounded-2xl text-xs' style={{ color: validationDescrizione ? "#86C66C": "red" }}> {validationDescrizione ? "Descrizione valida ✔ " :" Deve contenere tra 100 e 1000 caratteri(senza spazi iniziali e finali)❌"}</p>
 
                 <button type='submit' className='bg-lime-100 w-fit   p-2 rounded-2xl border  border-stone-200 mt-2 hover:bg-orange-100 hover:text-cyan-800 text-sky-900 font-bold hover:border-amber-800 cursor-pointer'>Send</button>
